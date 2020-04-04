@@ -1,11 +1,11 @@
-# mat-video for Angular 5/6/7/8+ and Material
+# mat-video is an Angular 8/9+ video player using Material
 [![npm version](https://badge.fury.io/js/mat-video.svg)](https://badge.fury.io/js/mat-video)
 [![Build Status](https://travis-ci.org/nkoehler/mat-video.svg?branch=master)](https://travis-ci.org/nkoehler/mat-video)
 [![Maintainability](https://api.codeclimate.com/v1/badges/46fb1a751d60d0f8b316/maintainability)](https://codeclimate.com/github/nkoehler/mat-video/maintainability)
 
 **mat-video** is an Angular component for playing videos.  It has all the features you would expect from a standard video player, all in an extremely light package. The video player is designed to be flexible and easy to use; you can be up and running in less than 5 minutes!
 
-It was built for modern browsers using _TypeScript_, _CSS3_ and _HTML5_ with _Angular & Material 5/6/7/8+_.
+It was built for modern browsers using _TypeScript_, _CSS3_ and _HTML5_ with _Angular & Material 8/9+_.
 
 See the [changelog](https://github.com/nkoehler/mat-video/blob/master/CHANGELOG.md) for recent changes.  
 
@@ -34,16 +34,10 @@ If you wish to contribute, please fill out the [pull request template](https://g
 - Supports Chrome, Firefox, Safari, and Edge
 
 ## Installation
-**mat-video** requires [Angular Material](https://material.angular.io/guide/getting-started) as a peer dependency, including animations.
+**mat-video** requires [Angular Material](https://material.angular.io/guide/getting-started) as a peer dependency, including animations and a theme.
 
 ```
-npm install --save @angular/material @angular/cdk @angular/animations hammerjs
-```
-
-Add the following import to `src/polyfills.ts`:
-
-```typescript
-import 'hammerjs';
+ng add @angular/material
 ```
 
 To use **mat-video** in your project install it via [npm](https://www.npmjs.com/package/mat-video):
@@ -67,12 +61,6 @@ import { MatVideoModule } from 'mat-video';
 export class AppModule { }
 ```
 
-Finally, include an [Angular Material theme](https://material.angular.io/guide/theming) in `styles.css`, or via a `<link>` element in `index.html`.
-
-```css
-@import '~@angular/material/prebuilt-themes/indigo-pink.css';
-```
-
 ## Usage
 A minimal example is quite simple, in your HTML file:
 
@@ -94,7 +82,7 @@ A slightly more customized example, in your HTML file:
 ## API
 Attribute | Type | Description | Default
 --- | --- | --- | ---
-*src* | **string** | Path or URL to a video | *null*
+*src* | **string, MediaStream, MediaSource, Blob** | Path, URL, or `srcObject` for a video | *null*
 *title* | **string** | Title for the video | *null*
 *autoplay* | **boolean** | Whether the video should autoplay | *false*
 *preload* | **boolean** | Whether the video should preload | *true*
@@ -104,6 +92,7 @@ Attribute | Type | Description | Default
 *quality* | **boolean** | Whether the video will have a quality indicator | *true*
 *download* | **boolean** | Whether the video will have a download option | *false*
 *fullscreen* | **boolean** | Whether the video will have a fullscreen option | *true*
+*playsinline* | **boolean** | Whether the video should play inline | *false*
 *showFrameByFrame* | **boolean** | Whether the video will display frame-by-frame controls | *false*
 *keyboard* | **boolean** | Whether the player will have keyboard shortcuts | *true*
 *overlay* | **boolean** | Force the overlay/controls to be shown or hidden | *null*
@@ -148,10 +137,19 @@ export class SampleComponent implements OnInit {
 
 This API feature is considered experimental, and is subject to change.
 
-## Angular Compatibility Depreciation Notice (2019-06-14)
-Angular is rapidly growing with every major release.  This has caused an increasing burden on the development of **mat-video** to support older versions of Angular.  Due to the vast amount of differences between modern Angular and previous Angular versions, **mat-video** will officially be dropping support for older Angular versions with the upcoming Angular 9 release scheduled for November 2019.  Existing releases will continue to function with older versions of Angular, however, no support will be provided for these versions.  Instead, **mat-video** will provide backwards compatibility in a similar way to how Angular supports this.  This notice is provided as an opportunity for developers to make necessary upgrades and plans for the future.  More details will be announced closer to the release of Angular 9.
+## Compatibility
+**mat-video** supports the last two major Angular versions.  Previous versions of **mat-video** support older versions of Angular.
+
+mat-video Version | Angular Version
+--- | ---
+1.0.0 - 2.7.2 | Angular 5, 6, 7, 8
+2.8.0+ | Angular 8, 9
+
 
 ## Credits
 **mat-video** is an open-source project developed by Nicholas Koehler.
 
-Special thanks to [mediapack-me](https://github.com/mediapack-me) for responsive assistance.
+Special thanks:
+- [mediapack-me](https://github.com/mediapack-me) for responsive assistance.
+- [buu700](https://github.com/buu700) for several features and fixes.
+- [fabiomartino](https://github.com/fabiomartino) for modernizing project structure.

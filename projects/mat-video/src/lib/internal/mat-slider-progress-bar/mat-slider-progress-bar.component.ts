@@ -1,15 +1,15 @@
-import { Component, Input, ElementRef, ChangeDetectorRef, ChangeDetectionStrategy, Optional, Attribute } from "@angular/core";
-import { MatSlider, MAT_SLIDER_VALUE_ACCESSOR } from "@angular/material/slider";
-import { FocusMonitor } from "@angular/cdk/a11y";
-import { Directionality } from "@angular/cdk/bidi";
+import { Component, Input, ElementRef, ChangeDetectorRef, ChangeDetectionStrategy, Optional, Attribute } from '@angular/core';
+import { MatSlider, MAT_SLIDER_VALUE_ACCESSOR } from '@angular/material/slider';
+import { FocusMonitor } from '@angular/cdk/a11y';
+import { Directionality } from '@angular/cdk/bidi';
 
 /** Counter used to generate unique IDs for progress bars. */
 let sliderprogressbarId = 0;
 
 @Component({
-  selector: "mat-slider-progress-bar",
-  templateUrl: "./mat-slider-progress-bar.component.html",
-  styleUrls: ["./mat-slider-progress-bar.component.scss"],
+  selector: 'mat-slider-progress-bar',
+  templateUrl: './mat-slider-progress-bar.component.html',
+  styleUrls: ['./mat-slider-progress-bar.component.scss'],
   providers: [MAT_SLIDER_VALUE_ACCESSOR],
   host: {
     "(focus)": "_onFocus()",
@@ -40,11 +40,11 @@ let sliderprogressbarId = 0;
     "[class.mat-slider-min-value]": "_isMinValue",
     "[class.mat-slider-hide-last-tick]": "disabled || _isMinValue && _thumbGap && _invertAxis"
   },
-  inputs: ["disabled", "color", "tabIndex"],
+  inputs: ['disabled', 'color', 'tabIndex'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MatSliderProgressBarComponent extends MatSlider {
-  @Input() mode = "buffer";
+  @Input() mode = 'buffer';
   @Input() value = 0;
   /** Buffer value of the progress bar. Defaults to zero. */
   @Input()
@@ -64,7 +64,7 @@ export class MatSliderProgressBarComponent extends MatSlider {
     focusMonitor: FocusMonitor,
     changeDetectorRef: ChangeDetectorRef,
     @Optional() dir: Directionality,
-    @Attribute("tabindex") tabIndex: string
+    @Attribute('tabindex') tabIndex: string
   ) {
     super(elementRef, focusMonitor, changeDetectorRef, dir, tabIndex);
     this.tabIndex = parseInt(tabIndex, 10) || 0;
@@ -72,8 +72,8 @@ export class MatSliderProgressBarComponent extends MatSlider {
 
   /** CSS styles for the track fill element. */
   get _trackBufferStyles(): { [key: string]: string } {
-    if (this.mode === "buffer") {
-      const axis = this.vertical ? "Y" : "X";
+    if (this.mode === 'buffer') {
+      const axis = this.vertical ? 'Y' : 'X';
       return {
         transform: `translate${axis}(0px) scale${axis}(${this.pBufferValue / 100})`
       };

@@ -1,30 +1,43 @@
-import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnDestroy, Output, Renderer2, ViewChild } from "@angular/core";
-import { ThemePalette } from "@angular/material/core";
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  EventEmitter,
+  Input,
+  OnChanges,
+  OnDestroy,
+  Output,
+  Renderer2,
+  SimpleChanges,
+  ViewChild
+} from '@angular/core';
+import { ThemePalette } from '@angular/material/core';
 
-import { EventHandler } from "./interfaces/event-handler.interface";
-import { EventService } from "./services/event.service";
+import { EventHandler } from './interfaces/event-handler.interface';
+import { EventService } from './services/event.service';
 
 @Component({
-  selector: "mat-video",
-  templateUrl: "./video.component.html",
-  styleUrls: ["./video.component.scss", "./styles/icons.scss"]
+  selector: 'mat-video',
+  templateUrl: './video.component.html',
+  styleUrls: ['./video.component.scss', './styles/icons.scss']
 })
-export class MatVideoComponent implements AfterViewInit, OnDestroy {
-  @ViewChild("player", { static: false }) private player: ElementRef;
-  @ViewChild("video", { static: false }) private video: ElementRef;
+export class MatVideoComponent implements AfterViewInit, OnChanges, OnDestroy {
+  @ViewChild('player', { static: false }) private player: ElementRef;
+  @ViewChild('video', { static: false }) private video: ElementRef;
 
-  @Input() src: string = null;
+  @Input() src: string | MediaStream | MediaSource | Blob = null;
   @Input() title: string = null;
   @Input() autoplay = false;
   @Input() preload = true;
   @Input() loop = false;
   @Input() quality = true;
   @Input() fullscreen = true;
+  @Input() playsinline = false;
   @Input() showFrameByFrame = false;
   @Input() fps = 29.97;
   @Input() download = false;
-  @Input() color: ThemePalette = "primary";
-  @Input() spinner = "spin";
+  @Input() color: ThemePalette = 'primary';
+  @Input() spinner = 'spin';
   @Input() poster: string = null;
   @Input() keyboard = true;
   @Input() overlay: boolean = null;
@@ -67,6 +80,8 @@ export class MatVideoComponent implements AfterViewInit, OnDestroy {
 
   videoLoaded = false;
 
+  private srcObjectURL: string;
+
   private isMouseMoving = false;
   private isMouseMovingTimer: NodeJS.Timer;
   private isMouseMovingTimeout = 2000;
@@ -79,37 +94,37 @@ export class MatVideoComponent implements AfterViewInit, OnDestroy {
     this.events = [
       {
         element: this.video.nativeElement,
-        name: "loadstart",
+        name: 'loadstart',
         callback: event => (this.videoLoaded = false),
         dispose: null
       },
       {
         element: this.video.nativeElement,
-        name: "loadedmetadata",
+        name: 'loadedmetadata',
         callback: event => this.evLoadedMetadata(event),
         dispose: null
       },
       {
         element: this.video.nativeElement,
-        name: "error",
-        callback: event => console.error("Unhandled Video Error", event),
+        name: 'error',
+        callback: event => console.error('Unhandled Video Error', event),
         dispose: null
       },
       {
         element: this.video.nativeElement,
-        name: "contextmenu",
+        name: 'contextmenu',
         callback: event => event.preventDefault(),
         dispose: null
       },
       {
         element: this.video.nativeElement,
-        name: "timeupdate",
+        name: 'timeupdate',
         callback: event => this.evTimeUpdate(event),
         dispose: null
       },
       {
         element: this.player.nativeElement,
-        name: "mousemove",
+        name: 'mousemove',
         callback: event => this.evMouseMove(event),
         dispose: null
       }
@@ -118,6 +133,14 @@ export class MatVideoComponent implements AfterViewInit, OnDestroy {
     this.video.nativeElement.onloadeddata = () => (this.videoLoaded = true);
 
     this.evt.addEvents(this.renderer, this.events);
+
+    this.setVideoSrc(this.src);
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes.src) {
+      this.setVideoSrc(this.src);
+    }
   }
 
   ngOnDestroy(): void {
@@ -160,5 +183,32 @@ export class MatVideoComponent implements AfterViewInit, OnDestroy {
     } else {
       return this.overlay ? activeClass : inactiveClass;
     }
+  }
+
+  private setVideoSrc(src: string | MediaStream | MediaSource | Blob): void {
+    if (this.srcObjectURL) {
+      URL.revokeObjectURL(this.srcObjectURL);
+      this.srcObjectURL = null;
+    }
+
+    if (!this.video || !this.video.nativeElement) {
+      return;
+    }
+
+    if (!src) {
+      this.video.nativeElement.src = null;
+      if ('srcObject' in HTMLVideoElement.prototype) {
+        this.video.nativeElement.srcObject = new MediaStream();
+      }
+    } else if (typeof src === 'string') {
+      this.video.nativeElement.src = src;
+    } else if ('srcObject' in HTMLVideoElement.prototype) {
+      this.video.nativeElement.srcObject = src;
+    } else {
+      this.srcObjectURL = URL.createObjectURL(src);
+      this.video.nativeElement.src = this.srcObjectURL;
+    }
+
+    this.video.nativeElement.muted = this.muted;
   }
 }
